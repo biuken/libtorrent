@@ -81,7 +81,6 @@ namespace aux {
 			}
 
 			std::size_t ret = 0;
-			error_code e;
 			for (auto buf : vec)
 			{
 				std::size_t const r = fread(buf.data(), 1, buf.size(), f);
@@ -99,12 +98,11 @@ namespace aux {
 			fclose(f);
 
 			// we either get an error or 0 or more bytes read
-			TORRENT_ASSERT(e || ret > 0);
+			TORRENT_ASSERT(ec.ec || ret > 0);
 			TORRENT_ASSERT(int(ret) <= bufs_size(vec));
 
-			if (e)
+			if (ec.ec)
 			{
-				ec.ec = e;
 				ec.file(file_index);
 				return -1;
 			}
