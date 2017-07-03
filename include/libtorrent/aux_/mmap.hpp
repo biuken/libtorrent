@@ -45,6 +45,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
+
 #endif // TORRENT_HAVE_MAP_VIEW_OF_FILE
 
 namespace libtorrent {
@@ -55,6 +56,18 @@ using byte = char;
 namespace aux {
 
 	using namespace flags;
+
+#include "libtorrent/aux_/disable_warnings_push.hpp"
+
+#if TORRENT_HAVE_MAP_VIEW_OF_FILE
+	using native_handle_t = HANDLE;
+	constexpr native_handle_t invalid_handle = INVALID_HANDLE_VALUE;
+#else
+	using native_handle_t = int;
+	constexpr native_handle_t invalid_handle = -1;
+#endif
+
+#include "libtorrent/aux_/disable_warnings_pop.hpp"
 
 	struct TORRENT_EXTRA_EXPORT file_handle
 	{
@@ -69,20 +82,9 @@ namespace aux {
 
 		std::int64_t get_size() const;
 
-#if TORRENT_HAVE_MAP_VIEW_OF_FILE
-		using native_handle_t = HANDLE;
-#else
-		using native_handle_t = int;
-#endif
-
 		native_handle_t fd() const { return m_fd; }
 	private:
 		void close();
-#if TORRENT_HAVE_MAP_VIEW_OF_FILE
-		static constexpr native_handle_t invalid_handle = INVALID_HANDLE_VALUE;
-#else
-		static constexpr native_handle_t invalid_handle = -1;
-#endif
 		native_handle_t m_fd;
 	};
 
