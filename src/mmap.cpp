@@ -299,7 +299,7 @@ file_mapping::file_mapping(file_handle file, open_mode_t const mode
 	: m_size(memory_map_size(mode, file_size, file))
 	, m_file(std::move(file), mode, m_size)
 	, m_mapping(MapViewOfFile(m_file.handle()
-		, map_access(mode), 0, 0, m_size))
+		, map_access(mode), 0, 0, static_cast<std::size_t>(m_size)))
 {
 	// you can't create an mmap of size 0, so we just set it to null. We
 	// still need to create the empty file.
