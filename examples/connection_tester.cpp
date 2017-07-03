@@ -851,14 +851,14 @@ void write_handler(file_storage const& fs
 		return;
 	}
 
-	if (piece >= fs.num_pieces()) return;
+	if (piece >= fs.end_piece()) return;
 	offset += 0x4000;
 	if (offset >= fs.piece_size(piece))
 	{
 		offset = 0;
 		++piece;
 	}
-	if (piece >= fs.num_pieces()) return;
+	if (piece >= fs.end_piece()) return;
 
 	if (static_cast<int>(piece) & 1)
 	{
@@ -904,7 +904,7 @@ void generate_data(char const* path, torrent_info const& ti)
 	std::uint32_t buffer[0x4000 / 4];
 	generate_block(buffer, piece, offset);
 
-	disk->async_write(st, { piece, offset, std::min(fs.piece_size(0), 0x4000)}
+	disk->async_write(st, { piece, offset, std::min(fs.piece_size(piece), 0x4000)}
 		, reinterpret_cast<char const*>(buffer)
 		, std::shared_ptr<disk_observer>()
 		, [&](lt::storage_error const& error)
