@@ -513,7 +513,6 @@ std::string monitor_dir;
 int poll_interval = 5;
 int max_connections_per_torrent = 50;
 bool seed_mode = false;
-int cache_size = 1024;
 
 bool share_mode = false;
 
@@ -1086,7 +1085,6 @@ MAGNETURL is a magnet link
 #endif
 
 	auto& settings = params.settings;
-	settings.set_int(settings_pack::cache_size, cache_size);
 	settings.set_int(settings_pack::choking_algorithm, settings_pack::rate_based_choker);
 
 	lt::time_duration refresh_delay = lt::milliseconds(500);
@@ -1562,13 +1560,6 @@ MAGNETURL is a magnet link
 				if (c == '5') print_peer_rate = !print_peer_rate;
 				if (c == '6') print_fails = !print_fails;
 				if (c == '7') print_send_bufs = !print_send_bufs;
-				if (c == 'C')
-				{
-					cache_size = (cache_size == 0) ? -1 : 0;
-					settings_pack p;
-					p.set_int(settings_pack::cache_size, cache_size);
-					ses.apply_settings(std::move(p));
-				}
 				if (c == 'h')
 				{
 					clear_screen();
@@ -1581,13 +1572,13 @@ CLIENT OPTIONS
 [q] quit client                                 [m] add magnet link
 
 TORRENT ACTIONS
-[p] pause/resume selected torrent               [C] toggle disk cache
+[p] pause/resume selected torrent               [W] remove all web seeds
 [s] toggle sequential download                  [j] force recheck
 [space] toggle session pause                    [c] clear error
 [v] scrape                                      [D] delete torrent and data
 [r] force reannounce                            [R] save resume data for all torrents
 [o] set piece deadlines (sequential dl)         [P] toggle auto-managed
-[k] toggle force-started                        [W] remove all web seeds
+[k] toggle force-started
 
 DISPLAY OPTIONS
 left/right arrow keys: select torrent filter
