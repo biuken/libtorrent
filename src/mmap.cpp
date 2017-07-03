@@ -97,7 +97,7 @@ namespace {
 
 file_handle::file_handle(string_view name, std::int64_t
 	, open_mode_t const mode)
-	: m_fd(CreateFileW(convert_to_native_path_string(name).c_str()
+	: m_fd(CreateFileW(convert_to_native_path_string(name.to_string()).c_str()
 		, file_access(mode)
 		, file_share(mode)
 		, nullptr
